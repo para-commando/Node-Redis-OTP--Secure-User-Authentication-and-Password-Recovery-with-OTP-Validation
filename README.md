@@ -272,7 +272,7 @@ Each service exposes its own set of APIs.
 ```
 ## Directory Structure
 
-    server
+        Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation
         ├── API-Gateway
         │   └── src
         │       ├── app.js
@@ -287,12 +287,13 @@ Each service exposes its own set of APIs.
         │           │   └── responseTime.middleware.js
         │           └── Route-Middlewares
         │               └── expressRateLimit.middleware.js
-        |
         ├── shared
         │   └── src
         │       ├── configurations
         │       │   ├── logger.configurations.js
-        │       │   └── redis.configurations.js
+        │       │   ├── Otp.configurations.js
+        │       │   ├── redis.configurations.js
+        │       │   └── twilioServices.configurations.js
         │       ├── constants
         │       │   └── constants.js
         │       ├── models
@@ -300,22 +301,9 @@ Each service exposes its own set of APIs.
         │       └── utilities
         │           └── utilities.js
         |── sub-systems
-        |    ├── Microservice-1
-        |    │   ├── Processes
-        |    │   │   └── process.js
-        |    │   └── Process-Mappers
-        |    │       └── processMappers.js
-        |    ├── Microservice-2
-        |    │   ├── Processes
-        |    │   │   └── process.js
-        |    │   └── Process-Mappers
-        |    │       └── processMappers.js
-        |    └── Microservice-3
-        |        ├── Processes
-        |        │   └── process.js
-        |        └── Process-Mappers
-        |            └── processMappers.js
-        |
+        |    └── Microservice-1
+        |        └── Processes
+        |            └── process.js
         ├── ecosystem.config.js
         ├── package.json
         ├── package-lock.json
