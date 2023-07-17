@@ -337,36 +337,38 @@ Each service exposes its own set of APIs.
 ## Dependencies
 
     Express: Fast, unopinionated, minimalist web framework for Node.js.
-    
+
     Body Parser: Node.js body parsing middleware.
-    
+
     Bunyan: Logging library for Node.js.
-    
+
     Bunyan Format: Human-readable bunyan log formatter.
-    
+
     DDoS: DDoS protection middleware for Express.js.
-    
+
     Dotenv: Loads environment variables from a .env file.
-    
+
     Helmet: Secure your Express apps by setting various HTTP headers.
-    
-    Joi: Object schema validation for Node.js. 
-    
+
+    Joi: Object schema validation for Node.js.
+
     JSONWebToken: JSON Web Token implementation for Node.js.
-    
+
     Morgan: HTTP request logger middleware for Node.js.
-    
+
     Nodemon: Automatically restarts the server on file changes during   development.
-    
+
     PM2: Production process manager for Node.js applications.
-    
+
     Express Rate Limit: Rate limiting middleware for Express.js.
-    
+
     Redis: In-memory data structure store used as a database and cache.
-    
+
     Rate Limit Redis: Redis-based store for express-rate-limit middleware.
-    
+
     Response Time: Express.js middleware to record response times.
+
+    bcryptjs :  It is a library for hashing passwords, providing a secure and efficient way to store and compare user   passwords in Node.js applications.
 
 ## License
 
