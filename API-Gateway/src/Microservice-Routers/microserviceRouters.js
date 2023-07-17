@@ -1,6 +1,6 @@
 const app = require('../app');
 const {
-  registerUserMiddlewares, loginUserMiddlewares, sendOtpMiddlewares, verifyOtpMiddlewares
+  registerUserMiddlewares, loginUserMiddlewares, sendOtpMiddlewares, verifyOtpMiddlewares, resetPasswordMiddlewares
 } = require('../Middlewares/Route-Middlewares/expressRateLimit.middleware');
 const Joi = require('joi');
 const {
@@ -136,6 +136,42 @@ app.post(
         const response = await Processes.verifyOtp({
           phoneNo: phoneNo,
           otp: otp,
+        });
+        logger.info('🚀response: ', response);
+        res.status(200).json({
+          responseData: response,
+        });
+      }
+    } catch (error) {
+      logger.error('This is an error message.');
+      res.status(400).json({ error: error });
+    }
+  }
+);
+
+app.post(
+  '/routes/userAuthentication/reset-Password',
+  resetPasswordMiddlewares.expressRateLimiterMiddleware,
+  async (req, res, next) => {
+    try {
+      const schema = Joi.object({
+        phoneNo: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
+        userName: Joi.string().min(3).max(30).required(),
+        password: Joi.string().min(8).max(30).required(),
+      });
+      const validatedData = schema.validate(req.body);
+      if (validatedData?.error) {
+        throw {
+          status: 400,
+          message: 'Bad Request',
+          error: validatedData?.error,
+        };
+      } else {
+        const { phoneNo, userName, password } = validatedData.value;
+        const response = await Processes.changePassword({
+          userName: userName,
+          password: password,
+          phoneNo: phoneNo,
         });
         logger.info('🚀response: ', response);
         res.status(200).json({
