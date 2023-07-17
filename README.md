@@ -78,6 +78,47 @@ The base URL for all endpoints is `/routes/userAuthentication/`, and the API sup
         4. If the username is available, it saves the user's details, including the username, email, hashed password, and phone number, in the system.
 
         5. Additionally, it stores the username and password separately for use in the forgot password functionality.
+### 2. `/login-user`
+
+- Method: POST
+- Description: Allows an existing user to log in to the system using their username and password.
+- Parameters:
+  - `userName` (string, required): The user's username.
+  - `password` (string, required): The user's password.
+- Responses:
+  - `200`: User logged in successfully.
+  - `400`: Bad request. Invalid password.
+  - `503`: Login user process failed. Internal error in the process layer.
+  - `423`: Locked. Account locked due to the maximum number of failed attempts. Try again after some time.
+  - `401`: Unauthorized. Invalid username or new user.
+- Sample Request:
+
+```
+{
+  "userName": "Anirudh.Nayak",
+  "password": "iWillNotTellYou9934"
+}
+```
+
+- ProcessLogic
+
+  1. Checks if the user's account is temporarily locked due to exceeding the maximum number of failed login attempts.
+
+  2. If the account is locked, it throws a Locked error indicating the account is temporarily locked and suggests waiting for a certain period before attempting again.
+
+  3. Checks if the provided username exists in the system.
+
+  4. If the username exists, it retrieves the saved password for the corresponding user.
+
+  5. Compares the provided password with the saved password using bcrypt for validation.
+
+  6. If the credentials match, it indicates successful login.
+
+  7. If the credentials do not match, it tracks the number of failed login attempts for the user.
+
+  8. If the failed login attempts exceed the maximum allowed, it locks the account temporarily and throws a Locked error.
+
+  9. For each failed login attempt, it increments the failed login count and sets an expiration time for the count.
 ## Features
 
 - **Microservices**: The architecture is based on microservices, where each service represents a specific business functionality or feature.
