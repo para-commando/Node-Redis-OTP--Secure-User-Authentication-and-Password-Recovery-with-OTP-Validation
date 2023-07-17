@@ -153,6 +153,41 @@ The base URL for all endpoints is `/routes/userAuthentication/`, and the API sup
         6. If an OTP has not been sent previously, it generates a new OTP, stores it in the system associated with the user's phone number, and sets its TTL.
 
         7. Finally, it sends the newly generated OTP to the user's phone number along with the remaining TTL.
+
+### 4. `/verify-OTP`
+
+- Method: POST
+- Description: Authenticates the user by verifying the OTP sent earlier using the `/send-OTP` API.
+- Parameters:
+  - `phoneNo` (string, required): The user's phone number.
+  - `otp` (string, required): The OTP received by the user.
+- Responses:
+  - `200`: OTP verification was successful.
+  - `403`: Forbidden. Please generate a new OTP.
+  - `401`: Unauthorized. Incorrect phone number or user does not exist.
+  - `503`: Verify OTP process failed. Internal error in the process layer.
+- Sample Request:
+
+```
+ {
+  "phoneNo": "9999999999",
+  "otp": "829632"
+}
+```
+
+- ProcessLogic:
+
+        1. Checks if the user exists in the system based on the provided phone number.
+
+        2. Validates if the provided OTP matches the OTP stored in the system for the user.
+
+        3. If the OTP is valid, it indicates successful OTP verification.
+
+        4. If the OTP does not match or the user does not exist, it throws an Unauthorized error indicating incorrect phone number, invalid OTP, or non-existent user.
+
+        5. Additionally, it checks if the OTP has expired and sends a Forbidden error if a new OTP needs to be generated.
+
+        6. If all conditions are met, it indicates successful OTP verification.
 ## Features
 
 - **Microservices**: The architecture is based on microservices, where each service represents a specific business functionality or feature.
