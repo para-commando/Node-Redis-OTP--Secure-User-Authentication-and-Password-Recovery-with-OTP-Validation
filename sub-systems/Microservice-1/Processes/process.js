@@ -4,6 +4,119 @@ require('dotenv').config();
 const redisClient = require('../../../shared/src/configurations/redis.configurations.js');
 const twilioSmsClient = require('../../../shared/src/configurations/twilioServices.configurations');
 module.exports.Processes = {
+    verifyOtp: async ({ phoneNo, otp }) => {
+        try {
+            // Check if the user with the given phone number exists
+            const isExistingUser = await redisClient.exists(`user:${phoneNo}`);
+            if (isExistingUser !== 1) {
+                throw {
+                    status: 401,
+                    message: 'Unauthorized',
+                    error: 'Incorrect phone number or User does not exist',
+                };
+            }
+    
+            // Check if an OTP has been sent for the given phone number
+            const isOtpAlreadySent = await redisClient.exists(`user:${phoneNo}:otp`);
+            if (isOtpAlreadySent !== 1) {
+                throw {
+                    status: 403,
+                    message: 'Forbidden',
+                    error: 'Please generate a new OTP',
+                };
+            }
+    
+            // Check if the OTP is available for a sufficient amount of time
+            const timeLeftForOtpToExpire = await redisClient.ttl(`user:${phoneNo}:otp`);
+            const isOtpAvailableForSufficientTime = timeLeftForOtpToExpire > 5;
+    
+            if (isOtpAlreadySent === 1 && isOtpAvailableForSufficientTime) {
+                // Retrieve the already generated OTP
+                const alreadyGeneratedOtp = await redisClient.get(`user:${phoneNo}:otp`);
+    
+                if (alreadyGeneratedOtp === otp) {
+                    // Set a flag indicating that the user is allowed to change the password
+                    await redisClient.set(`user:${phoneNo}:allowedToChangePassword`, 1);
+    
+                    // Set the expiration time for the flag
+                    await redisClient.expire(`user:${phoneNo}:allowedToChangePassword`, 500);
+                    const ttl = await redisClient.ttl(`user:${phoneNo}:allowedToChangePassword`);
+    
+                    // Fetch the username associated with the phone number
+                    const fetchUserName = await redisClient.hGet(`user:${phoneNo}`, 'userName');
+    
+                    // Send an SMS to the user with the username and a link to reset the password
+                    const twilioResponse = await twilioSmsClient.messages.create({
+                        body: `Your Username is ${fetchUserName} and link to reset your password is http://localhost:3000/routes/userAuthentication/reset-Password which will expire in ${ttl} seconds from now`,
+                        from: process.env.TWILIO_PHONE_NUMBER,
+                        to: `+91${phoneNo}`,
+                    });
+    
+                    return {
+                        message: `otp:${alreadyGeneratedOtp} verified successfully, you have ${ttl} seconds left to change your password. Your userName and link to reset password has been sent as an SMS to you`,
+                    };
+                } else {
+                    // Check if the failed attempt key exists in Redis
+                    const isFailedAttemptKeyPresent = await redisClient.exists(
+                        `user:${phoneNo}:numberOfFailedOtpValidationAttempts`
+                    );
+    
+                    if (isFailedAttemptKeyPresent === 1) {
+                        // Increment the number of failed OTP validation attempts
+                        await redisClient.incrBy(
+                            `user:${phoneNo}:numberOfFailedOtpValidationAttempts`,
+                            1
+                        );
+    
+                        // Get the number of failed attempts
+                        const numberOfFailedAttempts = await redisClient.get(
+                            `user:${phoneNo}:numberOfFailedOtpValidationAttempts`
+                        );
+    
+                        if (numberOfFailedAttempts > 2) {
+                            // Delete the OTP and the failed attempt key
+                            await redisClient.del(`user:${phoneNo}:otp`);
+                            await redisClient.del(
+                                `user:${phoneNo}:numberOfFailedOtpValidationAttempts`
+                            );
+    
+                            throw {
+                                status: 403,
+                                message: 'Forbidden',
+                                error:
+                                    'OTP expired due to the maximum number of failed attempts. Please generate a new OTP',
+                            };
+                        }
+                    } else {
+                        // Set the failed attempt key and its expiration time
+                        await redisClient.set(
+                            `user:${phoneNo}:numberOfFailedOtpValidationAttempts`,
+                            1
+                        );
+                        await redisClient.expire(
+                            `user:${phoneNo}:numberOfFailedOtpValidationAttempts`,
+                            30
+                        );
+                    }
+    
+                    throw {
+                        status: 400,
+                        message: 'Bad Request',
+                        error: 'Incorrect OTP',
+                    };
+                }
+            } else {
+                throw {
+                    status: 403,
+                    message: 'Forbidden',
+                    error: 'OTP expired. Please generate a new OTP',
+                };
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
+    
     sendOtp: async ({ phoneNo }) => {
         try {
             // Check if the user with the given phone number exists
