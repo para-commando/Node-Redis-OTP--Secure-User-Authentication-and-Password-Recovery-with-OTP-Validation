@@ -2,8 +2,60 @@ const logger = require('../../../shared/src/configurations/logger.configurations
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const redisClient = require('../../../shared/src/configurations/redis.configurations.js');
-
+const twilioSmsClient = require('../../../shared/src/configurations/twilioServices.configurations');
 module.exports.Processes = {
+    sendOtp: async ({ phoneNo }) => {
+        try {
+            // Check if the user with the given phone number exists
+            const isExistingUser = await redisClient.exists(`user:${phoneNo}`);
+            if (isExistingUser !== 1) {
+                throw {
+                    status: 401,
+                    message: 'Unauthorized',
+                    error: 'Incorrect phone number or User does not exist',
+                };
+            }
+    
+            // Check if an OTP has already been sent for the given phone number
+            const isOtpAlreadySent = await redisClient.exists(`user:${phoneNo}:otp`);
+            if (isOtpAlreadySent === 1) {
+                // Retrieve the already generated OTP and its time-to-live (TTL)
+                const alreadyGeneratedOtp = await redisClient.get(`user:${phoneNo}:otp`);
+                const ttl = await redisClient.ttl(`user:${phoneNo}:otp`);
+    
+                // Send the OTP via Twilio SMS
+                const twilioResponse = await twilioSmsClient.messages.create({
+                    body: `otp:${alreadyGeneratedOtp} expires in ${ttl} seconds`,
+                    from: process.env.TWILIO_PHONE_NUMBER,
+                    to: `+91${phoneNo}`,
+                });
+    
+                return {
+                    message: `otp:${alreadyGeneratedOtp} expires in ${ttl} seconds`,
+                };
+            } else {
+                // Generate a new OTP and store it in Redis
+                const otp = generateOTP();
+                await redisClient.set(`user:${phoneNo}:otp`, otp);
+    
+                // Set the expiration time for the OTP
+                await redisClient.expire(`user:${phoneNo}:otp`, 60);
+                const ttl = await redisClient.ttl(`user:${phoneNo}:otp`);
+    
+                // Send the OTP via Twilio SMS
+                const twilioResponse = await twilioSmsClient.messages.create({
+                    body: `otp:${otp} expires in ${ttl} seconds`,
+                    from: process.env.TWILIO_PHONE_NUMBER,
+                    to: `+91${phoneNo}`,
+                });
+    
+                return { message: `otp:${otp} expires in ${ttl} seconds` };
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
+    
     loginUser: async ({ userName, password }) => {
         try {
             const maxFailedAttempts = 5; // Maximum number of allowed failed login attempts
