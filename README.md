@@ -240,12 +240,12 @@ To get started with the project, follow these steps:
 
 1. Clone the repository:
 ```  
-   git clone https://github.com/anirudh-nayak-172k/Backend-Microservice -Architecture.git
+    git clone https://github.com/anirudh-nayak-172k/Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation.git
 ```  
 
 2 . Navigate to the Directory and install the dependencies:
 ```
-    cd Backend-Microservice-Architecture
+    cd Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation
     npm install
 ```
 
@@ -272,7 +272,7 @@ Each service exposes its own set of APIs.
 ```
 ## Directory Structure
 
-    server
+        Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation
         ├── API-Gateway
         │   └── src
         │       ├── app.js
@@ -287,12 +287,13 @@ Each service exposes its own set of APIs.
         │           │   └── responseTime.middleware.js
         │           └── Route-Middlewares
         │               └── expressRateLimit.middleware.js
-        |
         ├── shared
         │   └── src
         │       ├── configurations
         │       │   ├── logger.configurations.js
-        │       │   └── redis.configurations.js
+        │       │   ├── Otp.configurations.js
+        │       │   ├── redis.configurations.js
+        │       │   └── twilioServices.configurations.js
         │       ├── constants
         │       │   └── constants.js
         │       ├── models
@@ -300,22 +301,9 @@ Each service exposes its own set of APIs.
         │       └── utilities
         │           └── utilities.js
         |── sub-systems
-        |    ├── Microservice-1
-        |    │   ├── Processes
-        |    │   │   └── process.js
-        |    │   └── Process-Mappers
-        |    │       └── processMappers.js
-        |    ├── Microservice-2
-        |    │   ├── Processes
-        |    │   │   └── process.js
-        |    │   └── Process-Mappers
-        |    │       └── processMappers.js
-        |    └── Microservice-3
-        |        ├── Processes
-        |        │   └── process.js
-        |        └── Process-Mappers
-        |            └── processMappers.js
-        |
+        |    └── Microservice-1
+        |        └── Processes
+        |            └── process.js
         ├── ecosystem.config.js
         ├── package.json
         ├── package-lock.json
@@ -337,36 +325,38 @@ Each service exposes its own set of APIs.
 ## Dependencies
 
     Express: Fast, unopinionated, minimalist web framework for Node.js.
-    
+
     Body Parser: Node.js body parsing middleware.
-    
+
     Bunyan: Logging library for Node.js.
-    
+
     Bunyan Format: Human-readable bunyan log formatter.
-    
+
     DDoS: DDoS protection middleware for Express.js.
-    
+
     Dotenv: Loads environment variables from a .env file.
-    
+
     Helmet: Secure your Express apps by setting various HTTP headers.
-    
-    Joi: Object schema validation for Node.js. 
-    
+
+    Joi: Object schema validation for Node.js.
+
     JSONWebToken: JSON Web Token implementation for Node.js.
-    
+
     Morgan: HTTP request logger middleware for Node.js.
-    
+
     Nodemon: Automatically restarts the server on file changes during   development.
-    
+
     PM2: Production process manager for Node.js applications.
-    
+
     Express Rate Limit: Rate limiting middleware for Express.js.
-    
+
     Redis: In-memory data structure store used as a database and cache.
-    
+
     Rate Limit Redis: Redis-based store for express-rate-limit middleware.
-    
+
     Response Time: Express.js middleware to record response times.
+
+    bcryptjs :  It is a library for hashing passwords, providing a secure and efficient way to store and compare user   passwords in Node.js applications.
 
 ## License
 
