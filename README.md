@@ -1,6 +1,8 @@
-# Backend Microservice Architecture
+# Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation
 
-This repository demonstrates a sample backend microservice architecture using Node.js and Express.js.
+This README file provides a comprehensive overview of the API endpoints and their functionalities for the Node.js, Express.js, and Redis-implemented secure user authentication project. The project utilizes microservices, RESTful APIs, logging and monitoring, database integration, error handling, and authentication and authorization mechanisms to ensure scalability, security, and ease of maintenance.
+
+![Example Image](./shared/assets/OtpVerificationImage.jpg)
 
 ## Table of Contents
 
@@ -13,7 +15,7 @@ This repository demonstrates a sample backend microservice architecture using No
 
 ## Introduction
 
-This project showcases a microservice-based architecture for building scalable and modular backend systems. It aims to provide a foundation for building distributed applications with separate services for different functionalities.
+This project showcases a secure user authentication suite which can be used in building scalable and modular backend systems. This project focuses on secure login, sign-up, and OTP-validated password reset options. Below, you will find details about each API endpoint/Middlewares used along with their descriptions and request/response information.
 
 ## Middleware
 
