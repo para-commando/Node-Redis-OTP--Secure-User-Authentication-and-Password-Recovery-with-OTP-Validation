@@ -119,6 +119,40 @@ The base URL for all endpoints is `/routes/userAuthentication/`, and the API sup
   8. If the failed login attempts exceed the maximum allowed, it locks the account temporarily and throws a Locked error.
 
   9. For each failed login attempt, it increments the failed login count and sets an expiration time for the count.
+
+### 3. `/send-OTP`
+
+- Method: POST
+- Description: Triggers OTP authentication to an existing user if they forget their password or username.
+- Parameters:
+  - `phoneNo` (string, required): The user's phone number.
+- Responses:
+  - `201`: OTP sent successfully.
+  - `401`: Unauthorized. Incorrect phone number or user does not exist.
+  - `503`: Send OTP process failed. Internal error in the process layer.
+- Sample Request:
+
+```
+ {
+  "phoneNo": "9999999999",
+ }
+```
+
+- ProcessLogic:
+
+        1. Checks if the user exists in the system based on the provided phone number.
+
+        2. If the user does not exist, it throws an Unauthorized error indicating incorrect phone number or non-existent user.
+
+        3. If the user exists, it checks if an OTP has already been sent previously.
+
+        4. If an OTP has been sent, it retrieves the previously generated OTP and its time-to-live (TTL).
+
+        5. The process then sends the same OTP to the user's phone number along with the remaining TTL.
+
+        6. If an OTP has not been sent previously, it generates a new OTP, stores it in the system associated with the user's phone number, and sets its TTL.
+
+        7. Finally, it sends the newly generated OTP to the user's phone number along with the remaining TTL.
 ## Features
 
 - **Microservices**: The architecture is based on microservices, where each service represents a specific business functionality or feature.
