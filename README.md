@@ -240,12 +240,12 @@ To get started with the project, follow these steps:
 
 1. Clone the repository:
 ```  
-   git clone https://github.com/anirudh-nayak-172k/Backend-Microservice -Architecture.git
+    git clone https://github.com/anirudh-nayak-172k/Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation.git
 ```  
 
 2 . Navigate to the Directory and install the dependencies:
 ```
-    cd Backend-Microservice-Architecture
+    cd Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation
     npm install
 ```
 
