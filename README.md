@@ -188,6 +188,43 @@ The base URL for all endpoints is `/routes/userAuthentication/`, and the API sup
         5. Additionally, it checks if the OTP has expired and sends a Forbidden error if a new OTP needs to be generated.
 
         6. If all conditions are met, it indicates successful OTP verification.
+
+### 5. `/reset-Password`
+
+- Method: POST
+- Description: Resets the user's password after OTP authentication.
+- Parameters:
+  - `phoneNo` (string, required): The user's phone number.
+  - `userName` (string, required): The user's username.
+  - `password` (string, required): The new password.
+- Responses:
+  - `200`: Password reset was successful.
+  - `401`: Unauthorized. Incorrect phone number or user does not exist.
+  - `503`: Change password process failed. Internal error in the process layer.
+- Sample Request:
+
+```
+  {
+  "phoneNo": "9999999999",
+  "userName": "Anirudh.Nayak",
+  "password": "MyNewPassword123"
+  }
+```
+
+- ProcessLogic:
+
+        1. Checks if the user exists in the system based on the provided phone number.
+
+        2. Verifies if the user is allowed to change the password.
+
+        3. Validates if the provided username exists in the system.
+
+        4. If any of the above conditions are not met, it throws an Unauthorized error indicating invalid username/phone number or non-existent user.
+
+        5. If all conditions are met, it securely hashes the new password using bcrypt and updates the user's password in the system.
+
+        6. Sends a notification to the user confirming the successful password reset.
+
 ## Features
 
 - **Microservices**: The architecture is based on microservices, where each service represents a specific business functionality or feature.
