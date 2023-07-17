@@ -1,6 +1,6 @@
 const app = require('../app');
 const {
-  registerUserMiddlewares, loginUserMiddlewares
+  registerUserMiddlewares, loginUserMiddlewares, sendOtpMiddlewares
 } = require('../Middlewares/Route-Middlewares/expressRateLimit.middleware');
 const Joi = require('joi');
 const {
@@ -83,6 +83,37 @@ app.post(
   }
 );
 
+app.post(
+  '/routes/userAuthentication/send-OTP',
+  sendOtpMiddlewares.expressRateLimiterMiddleware,
+  async (req, res, next) => {
+    try {
+      const schema = Joi.object({
+        phoneNo: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
+      });
+      const validatedData = schema.validate(req.body);
+      if (validatedData?.error) {
+        throw {
+          status: 400,
+          message: 'Bad Request',
+          error: validatedData?.error,
+        };
+      } else {
+        const { phoneNo } = validatedData.value;
+        const response = await Processes.sendOtp({
+          phoneNo: phoneNo,
+        });
+        logger.info('🚀response: ', response);
+        res.status(200).json({
+          responseData: response,
+        });
+      }
+    } catch (error) {
+      logger.error('This is an error message.');
+      res.status(400).json({ error: error });
+    }
+  }
+);
 app.listen(3000, () => {
   console.log('listening on port 3000');
 });
