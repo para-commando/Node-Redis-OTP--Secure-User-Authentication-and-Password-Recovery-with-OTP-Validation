@@ -38,22 +38,4 @@ module.exports.myEndPointMiddlewares = {
   }),
 };
 
-module.exports.myEndPoint2Middlewares = {
-  expressRateLimiterMiddleware: expressRateLimiterMiddleware({
-    endpoint: 'myEndPoint2',
-    windowDurationInMinutes: 0.5, // 30 seconds
-    requestLimit: 2, // Limit each IP to 2 requests per 30 seconds
-    statusCode: 429, // HTTP status code for rate limit exceeded
-    ErrorMessage: 'Too many requests from your IP. Please try again later.',
-  }),
-};
-
-module.exports.myEndPoint3Middlewares = {
-  expressRateLimiterMiddleware: expressRateLimiterMiddleware({
-    endpoint: 'myEndPoint2',
-    windowDurationInMinutes: 0.5, // 30 seconds
-    requestLimit: 2, // Limit each IP to 2 requests per 30 seconds
-    statusCode: 429, // HTTP status code for rate limit exceeded
-    ErrorMessage: 'Too many requests from your IP. Please try again later.',
-  }),
-};
+ 
