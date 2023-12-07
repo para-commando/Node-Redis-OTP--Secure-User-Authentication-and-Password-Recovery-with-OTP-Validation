@@ -2,7 +2,8 @@
 
 This README file provides a comprehensive overview of the API endpoints and their functionalities for the Node.js, Express.js, and Redis-implemented secure user authentication project. The project utilizes microservices, RESTful APIs, logging and monitoring, database integration, error handling, and authentication and authorization mechanisms to ensure scalability, security, and ease of maintenance.
 
-![Example Image](./shared/assets/OtpVerificationImage.jpg)
+![OtpVerificationImage](https://github.com/anirudh-nayak-172k/Node-Redis-OTP--Secure-User-Authentication-and-Password-Recovery-with-OTP-Validation/assets/123434846/b4f12f3a-be5f-41b5-92ad-d88a385a4a8e)
+
 
 ## Table of Contents
 
